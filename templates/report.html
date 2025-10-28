@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - Stock Management System{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Inventory Report</h1>
+    <p class="text-gray-600">Comprehensive overview of your stock and inventory value.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+                <i class="fas fa-boxes text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">Total Products</h3>
+                <p class="text-3xl font-bold text-gray-900">{{ products|length }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-500 mr-4">
+                <i class="fas fa-cubes text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">Total Quantity</h3>
+                <p class="text-3xl font-bold text-gray-900">{{ total_quantity }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-purple-100 text-purple-500 mr-4">
+                <i class="fas fa-dollar-sign text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">Total Value</h3>
+                <p class="text-3xl font-bold text-gray-900">${{ "%.2f"|format(total_value) }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">Product Details</h2>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock Status</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for product in products %}
+                <tr class="hover:bg-gray-50 transition duration-300">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {{ product.category }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.quantity }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ "%.2f"|format(product.price) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ "%.2f"|format(product.quantity * product.price) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if product.quantity == 0 %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Out of Stock
+                        </span>
+                        {% elif product.quantity < 10 %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Low Stock
+                        </span>
+                        {% else %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            In Stock
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                        No products found. <a href="{{ url_for('add_product') }}" class="text-blue-600 hover:text-blue-800">Add your first product</a>.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Export Report</h2>
+    <div class="flex space-x-4">
+        <button onclick="window.print()" 
+                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 flex items-center">
+            <i class="fas fa-print mr-2"></i> Print Report
+        </button>
+        <button id="exportJson" 
+                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 flex items-center">
+            <i class="fas fa-file-export mr-2"></i> Export as JSON
+        </button>
+        <button id="exportPdf" 
+                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 flex items-center">
+            <i class="fas fa-file-pdf mr-2"></i> Export as PDF
+        </button>
+    </div>
+</div>
+
+<!-- Include jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+document.getElementById('exportJson').addEventListener('click', function() {
+    fetch('/api/report')
+        .then(response => response.json())
+        .then(data => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "inventory_report.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        });
+});
+
+document.getElementById('exportPdf').addEventListener('click', function() {
+    // Show loading state
+    const button = this;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating PDF...';
+    button.disabled = true;
+
+    // Get the report data for PDF content
+    fetch('/api/report')
+        .then(response => response.json())
+        .then(data => {
+            // Use jsPDF to generate PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.setTextColor(40, 40, 40);
+            doc.text('Inventory Report - StockMaster', 20, 20);
+            
+            // Add date
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
+            
+            // Add summary section
+            doc.setFontSize(16);
+            doc.setTextColor(40, 40, 40);
+            doc.text('Summary', 20, 50);
+            
+            doc.setFontSize(12);
+            doc.text(`Total Products: ${data.total_products}`, 20, 65);
+            doc.text(`Total Quantity: ${data.total_quantity}`, 20, 75);
+            doc.text(`Total Value: $${data.total_value.toFixed(2)}`, 20, 85);
+            
+            // Add product details section
+            doc.setFontSize(16);
+            doc.setTextColor(40, 40, 40);
+            doc.text('Product Details', 20, 105);
+            
+            // Table headers
+            doc.setFillColor(240, 240, 240);
+            doc.rect(20, 115, 170, 10, 'F');
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.text('Product', 22, 122);
+            doc.text('Category', 60, 122);
+            doc.text('Qty', 100, 122);
+            doc.text('Unit Price', 120, 122);
+            doc.text('Total Value', 150, 122);
+            doc.text('Status', 180, 122);
+            
+            // Product rows
+            let yPosition = 130;
+            data.products.forEach((product, index) => {
+                if (yPosition > 270) {
+                    doc.addPage();
+                    yPosition = 20;
+                    
+                    // Add table headers on new page
+                    doc.setFillColor(240, 240, 240);
+                    doc.rect(20, yPosition, 170, 10, 'F');
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFontSize(10);
+                    doc.text('Product', 22, yPosition + 7);
+                    doc.text('Category', 60, yPosition + 7);
+                    doc.text('Qty', 100, yPosition + 7);
+                    doc.text('Unit Price', 120, yPosition + 7);
+                    doc.text('Total Value', 150, yPosition + 7);
+                    doc.text('Status', 180, yPosition + 7);
+                    
+                    yPosition += 15;
+                }
+                
+                doc.text(product.name.substring(0, 25), 22, yPosition);
+                doc.text(product.category, 60, yPosition);
+                doc.text(product.quantity.toString(), 100, yPosition);
+                doc.text('$' + product.price.toFixed(2), 120, yPosition);
+                doc.text('$' + (product.quantity * product.price).toFixed(2), 150, yPosition);
+                
+                // Status with color coding
+                let status = 'In Stock';
+                let statusColor = [0, 128, 0]; // Green
+                
+                if (product.quantity === 0) {
+                    status = 'Out of Stock';
+                    statusColor = [255, 0, 0]; // Red
+                } else if (product.quantity < 10) {
+                    status = 'Low Stock';
+                    statusColor = [255, 165, 0]; // Orange
+                }
+                
+                doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                doc.text(status, 180, yPosition);
+                doc.setTextColor(0, 0, 0);
+                
+                yPosition += 10;
+            });
+            
+            // Save the PDF
+            doc.save('inventory_report.pdf');
+            
+            // Restore button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error generating PDF:', error);
+            alert('Error generating PDF. Please try again.');
+            
+            // Restore button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+        });
+});
+</script>
+{% endblock %}

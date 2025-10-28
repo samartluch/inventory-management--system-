@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Stock Management System{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+    <p class="text-gray-600">Welcome back, {{ current_user.username }}! Here's your stock overview.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+                <i class="fas fa-boxes text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">Total Products</h3>
+                <p class="text-3xl font-bold text-gray-900">{{ total_products }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-500 mr-4">
+                <i class="fas fa-check-circle text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">In Stock</h3>
+                <p class="text-3xl font-bold text-gray-900">{{ total_products - low_stock }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+        <div class="flex items-center">
+            <div class="p-3 rounded-full bg-red-100 text-red-500 mr-4">
+                <i class="fas fa-exclamation-triangle text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-700">Low Stock</h3>
+                <p class="text-3xl font-bold text-gray-900">{{ low_stock }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <a href="{{ url_for('add_product') }}" class="bg-blue-50 hover:bg-blue-100 p-4 rounded-lg border border-blue-200 transition duration-300">
+                <div class="flex items-center">
+                    <i class="fas fa-plus-circle text-blue-500 text-xl mr-3"></i>
+                    <span class="font-medium text-blue-700">Add Product</span>
+                </div>
+            </a>
+            <a href="{{ url_for('inventory') }}" class="bg-green-50 hover:bg-green-100 p-4 rounded-lg border border-green-200 transition duration-300">
+                <div class="flex items-center">
+                    <i class="fas fa-boxes text-green-500 text-xl mr-3"></i>
+                    <span class="font-medium text-green-700">View Inventory</span>
+                </div>
+            </a>
+            <a href="{{ url_for('report') }}" class="bg-purple-50 hover:bg-purple-100 p-4 rounded-lg border border-purple-200 transition duration-300">
+                <div class="flex items-center">
+                    <i class="fas fa-chart-bar text-purple-500 text-xl mr-3"></i>
+                    <span class="font-medium text-purple-700">Generate Report</span>
+                </div>
+            </a>
+            <a href="{{ url_for('inventory') }}" class="bg-yellow-50 hover:bg-yellow-100 p-4 rounded-lg border border-yellow-200 transition duration-300">
+                <div class="flex items-center">
+                    <i class="fas fa-edit text-yellow-500 text-xl mr-3"></i>
+                    <span class="font-medium text-yellow-700">Manage Products</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Activity</h2>
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <div class="p-2 rounded-full bg-blue-100 text-blue-500 mr-3">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div>
+                    <p class="text-gray-700">Welcome to StockMaster! Start by adding your first product.</p>
+                    <p class="text-sm text-gray-500">Just now</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="p-2 rounded-full bg-green-100 text-green-500 mr-3">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <p class="text-gray-700">Your account has been successfully created.</p>
+                    <p class="text-sm text-gray-500">When you registered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
