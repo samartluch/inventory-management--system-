@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Reports - Stock Management System{% endblock %}
+{% block title %}Reports - Inventory Management System{% endblock %}
 
 {% block content %}
 <div class="mb-8">
@@ -47,47 +47,100 @@
 </div>
 
 <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
-    <div class="px-6 py-4 border-b border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-800">Product Details</h2>
+        <div class="flex items-center">
+            <label for="report-sort-select" class="text-sm font-medium text-gray-700 mr-2">Sort by:</label>
+            <select id="report-sort-select" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="name-asc">Product Name (A-Z)</option>
+                <option value="name-desc">Product Name (Z-A)</option>
+                <option value="category-asc">Category (A-Z)</option>
+                <option value="category-desc">Category (Z-A)</option>
+                <option value="category-custom">Category (Custom Order)</option>
+                <option value="quantity-asc">Quantity (Low to High)</option>
+                <option value="quantity-desc">Quantity (High to Low)</option>
+                <option value="price-asc">Unit Price (Low to High)</option>
+                <option value="price-desc">Unit Price (High to Low)</option>
+                <option value="value-asc">Total Value (Low to High)</option>
+                <option value="value-desc">Total Value (High to Low)</option>
+                <option value="status-asc">Stock Status</option>
+            </select>
+        </div>
     </div>
     
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock Status</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 sort-header" data-sort="name">
+                        <div class="flex items-center">
+                            <span>Product</span>
+                            <i class="fas fa-sort ml-1 text-gray-400"></i>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 sort-header" data-sort="category">
+                        <div class="flex items-center">
+                            <span>Category</span>
+                            <i class="fas fa-sort ml-1 text-gray-400"></i>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 sort-header" data-sort="quantity">
+                        <div class="flex items-center">
+                            <span>Quantity</span>
+                            <i class="fas fa-sort ml-1 text-gray-400"></i>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 sort-header" data-sort="price">
+                        <div class="flex items-center">
+                            <span>Unit Price</span>
+                            <i class="fas fa-sort ml-1 text-gray-400"></i>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 sort-header" data-sort="value">
+                        <div class="flex items-center">
+                            <span>Total Value</span>
+                            <i class="fas fa-sort ml-1 text-gray-400"></i>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 sort-header" data-sort="status">
+                        <div class="flex items-center">
+                            <span>Stock Status</span>
+                            <i class="fas fa-sort ml-1 text-gray-400"></i>
+                        </div>
+                    </th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody id="report-table-body" class="bg-white divide-y divide-gray-200">
                 {% for product in products %}
-                <tr class="hover:bg-gray-50 transition duration-300">
+                <tr class="hover:bg-gray-50 transition duration-300 report-row" 
+                    data-name="{{ product.name|lower }}"
+                    data-category="{{ product.category|lower }}"
+                    data-quantity="{{ product.quantity }}"
+                    data-price="{{ product.price }}"
+                    data-value="{{ product.quantity * product.price }}"
+                    data-status="{{ 'out' if product.quantity == 0 else 'low' if product.quantity < 10 else 'in' }}">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                             {{ product.category }}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.quantity }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ "%.2f"|format(product.price) }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ "%.2f"|format(product.quantity * product.price) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${{ "%.2f"|format(product.quantity * product.price) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {% if product.quantity == 0 %}
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                             Out of Stock
                         </span>
                         {% elif product.quantity < 10 %}
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                             Low Stock
                         </span>
                         {% else %}
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                             In Stock
                         </span>
                         {% endif %}
@@ -95,8 +148,15 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
-                        No products found. <a href="{{ url_for('add_product') }}" class="text-blue-600 hover:text-blue-800">Add your first product</a>.
+                    <td colspan="6" class="px-6 py-8 text-center">
+                        <div class="text-gray-500">
+                            <i class="fas fa-chart-bar text-4xl mb-3"></i>
+                            <p class="text-lg">No products found.</p>
+                            <p class="text-sm mt-2">Add products to generate reports.</p>
+                            <a href="{{ url_for('add_product') }}" class="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                                <i class="fas fa-plus-circle mr-2"></i>Add Product
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -107,17 +167,17 @@
 
 <div class="bg-white rounded-lg shadow p-6">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Export Report</h2>
-    <div class="flex space-x-4">
+    <div class="flex flex-wrap gap-4">
         <button onclick="window.print()" 
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 flex items-center">
+                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 flex items-center">
             <i class="fas fa-print mr-2"></i> Print Report
         </button>
         <button id="exportJson" 
-                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 flex items-center">
+                class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 flex items-center">
             <i class="fas fa-file-export mr-2"></i> Export as JSON
         </button>
         <button id="exportPdf" 
-                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 flex items-center">
+                class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 flex items-center">
             <i class="fas fa-file-pdf mr-2"></i> Export as PDF
         </button>
     </div>
@@ -125,9 +185,118 @@
 
 <!-- Include jsPDF library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
+// Custom category order for reports
+const categoryOrder = {
+    'food': 1,
+    'fruit': 2,
+    'electronics': 3,
+    'dishwasher care': 4,
+    'beverages': 5
+};
+
+// Sorting functionality for report page
+let currentReportSort = { field: 'name', direction: 'asc' };
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click events to sort headers
+    document.querySelectorAll('#report-table-body').closest('table').querySelectorAll('.sort-header').forEach(header => {
+        header.addEventListener('click', function() {
+            const field = this.dataset.sort;
+            sortReportTable(field);
+        });
+    });
+    
+    // Add change event to sort select
+    document.getElementById('report-sort-select').addEventListener('change', function() {
+        const [field, direction] = this.value.split('-');
+        sortReportTable(field, direction);
+    });
+});
+
+function sortReportTable(field, direction = null) {
+    const rows = Array.from(document.querySelectorAll('.report-row'));
+    const tbody = document.getElementById('report-table-body');
+    
+    // Determine sort direction
+    if (direction) {
+        currentReportSort.direction = direction;
+    } else {
+        // Toggle direction if clicking the same field
+        if (currentReportSort.field === field) {
+            currentReportSort.direction = currentReportSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentReportSort.direction = 'asc';
+        }
+    }
+    
+    currentReportSort.field = field;
+    
+    // Update sort select to match
+    document.getElementById('report-sort-select').value = `${field}-${currentReportSort.direction}`;
+    
+    // Update sort indicators in headers
+    updateReportSortIndicators(field, currentReportSort.direction);
+    
+    // Sort rows
+    rows.sort((a, b) => {
+        let aValue = a.dataset[field];
+        let bValue = b.dataset[field];
+        
+        // Special handling for custom category order
+        if (field === 'category' && document.getElementById('report-sort-select').value === 'category-custom') {
+            const aOrder = categoryOrder[aValue] || 999;
+            const bOrder = categoryOrder[bValue] || 999;
+            return aOrder - bOrder;
+        }
+        
+        // Convert to numbers if applicable
+        if (field === 'quantity' || field === 'price' || field === 'value') {
+            aValue = parseFloat(aValue);
+            bValue = parseFloat(bValue);
+        }
+        
+        // Special handling for status field
+        if (field === 'status') {
+            // Order: in stock > low stock > out of stock
+            const statusOrder = { 'in': 3, 'low': 2, 'out': 1 };
+            aValue = statusOrder[aValue];
+            bValue = statusOrder[bValue];
+        }
+        
+        if (currentReportSort.direction === 'asc') {
+            return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+        } else {
+            return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+        }
+    });
+    
+    // Clear and re-append sorted rows
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function updateReportSortIndicators(activeField, direction) {
+    // Reset all sort indicators in report table
+    document.querySelectorAll('#report-table-body').closest('table').querySelectorAll('.sort-header i').forEach(icon => {
+        icon.className = 'fas fa-sort ml-1 text-gray-400';
+    });
+    
+    // Set active sort indicator
+    const activeHeader = document.querySelector(`#report-table-body`).closest('table').querySelector(`.sort-header[data-sort="${activeField}"] i`);
+    if (activeHeader) {
+        if (document.getElementById('report-sort-select').value === 'category-custom') {
+            activeHeader.className = 'fas fa-sort ml-1 text-indigo-500';
+        } else {
+            activeHeader.className = direction === 'asc' 
+                ? 'fas fa-sort-up ml-1 text-indigo-500' 
+                : 'fas fa-sort-down ml-1 text-indigo-500';
+        }
+    }
+}
+
+// Export functionality
 document.getElementById('exportJson').addEventListener('click', function() {
     fetch('/api/report')
         .then(response => response.json())
@@ -143,24 +312,21 @@ document.getElementById('exportJson').addEventListener('click', function() {
 });
 
 document.getElementById('exportPdf').addEventListener('click', function() {
-    // Show loading state
     const button = this;
     const originalText = button.innerHTML;
     button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating PDF...';
     button.disabled = true;
 
-    // Get the report data for PDF content
     fetch('/api/report')
         .then(response => response.json())
         .then(data => {
-            // Use jsPDF to generate PDF
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
             // Add title
             doc.setFontSize(20);
             doc.setTextColor(40, 40, 40);
-            doc.text('Inventory Report - StockMaster', 20, 20);
+            doc.text('Inventory Report - InventoryPro', 20, 20);
             
             // Add date
             doc.setFontSize(12);
@@ -190,18 +356,16 @@ document.getElementById('exportPdf').addEventListener('click', function() {
             doc.text('Product', 22, 122);
             doc.text('Category', 60, 122);
             doc.text('Qty', 100, 122);
-            doc.text('Unit Price', 120, 122);
-            doc.text('Total Value', 150, 122);
+            doc.text('Price', 120, 122);
+            doc.text('Value', 150, 122);
             doc.text('Status', 180, 122);
             
             // Product rows
             let yPosition = 130;
-            data.products.forEach((product, index) => {
+            data.products.forEach((product) => {
                 if (yPosition > 270) {
                     doc.addPage();
                     yPosition = 20;
-                    
-                    // Add table headers on new page
                     doc.setFillColor(240, 240, 240);
                     doc.rect(20, yPosition, 170, 10, 'F');
                     doc.setTextColor(0, 0, 0);
@@ -209,10 +373,9 @@ document.getElementById('exportPdf').addEventListener('click', function() {
                     doc.text('Product', 22, yPosition + 7);
                     doc.text('Category', 60, yPosition + 7);
                     doc.text('Qty', 100, yPosition + 7);
-                    doc.text('Unit Price', 120, yPosition + 7);
-                    doc.text('Total Value', 150, yPosition + 7);
+                    doc.text('Price', 120, yPosition + 7);
+                    doc.text('Value', 150, yPosition + 7);
                     doc.text('Status', 180, yPosition + 7);
-                    
                     yPosition += 15;
                 }
                 
@@ -222,37 +385,21 @@ document.getElementById('exportPdf').addEventListener('click', function() {
                 doc.text('$' + product.price.toFixed(2), 120, yPosition);
                 doc.text('$' + (product.quantity * product.price).toFixed(2), 150, yPosition);
                 
-                // Status with color coding
                 let status = 'In Stock';
-                let statusColor = [0, 128, 0]; // Green
+                if (product.quantity === 0) status = 'Out of Stock';
+                else if (product.quantity < 10) status = 'Low Stock';
                 
-                if (product.quantity === 0) {
-                    status = 'Out of Stock';
-                    statusColor = [255, 0, 0]; // Red
-                } else if (product.quantity < 10) {
-                    status = 'Low Stock';
-                    statusColor = [255, 165, 0]; // Orange
-                }
-                
-                doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
                 doc.text(status, 180, yPosition);
-                doc.setTextColor(0, 0, 0);
-                
                 yPosition += 10;
             });
             
-            // Save the PDF
             doc.save('inventory_report.pdf');
-            
-            // Restore button state
             button.innerHTML = originalText;
             button.disabled = false;
         })
         .catch(error => {
             console.error('Error generating PDF:', error);
             alert('Error generating PDF. Please try again.');
-            
-            // Restore button state
             button.innerHTML = originalText;
             button.disabled = false;
         });

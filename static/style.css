@@ -1,8 +1,8 @@
-/* Custom styles for the Stock Management System */
+/* Custom styles for Inventory Management System */
 
 /* Smooth transitions for all interactive elements */
 * {
-    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 /* Custom scrollbar */
@@ -12,6 +12,7 @@
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -23,14 +24,48 @@
     background: #a8a8a8;
 }
 
+/* Hover effects */
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Loading animations */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Custom focus styles */
+.focus-indigo:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #6366f1;
+}
+
 /* Print styles for reports */
 @media print {
-    nav, button, a {
+    nav, button, a, footer {
         display: none !important;
     }
     
     body {
         background: white !important;
+        font-size: 12pt;
     }
     
     .bg-white {
@@ -38,4 +73,56 @@
         box-shadow: none !important;
         border: 1px solid #ddd !important;
     }
+    
+    .text-gray-900 {
+        color: #000 !important;
+    }
+}
+
+/* Chart container responsiveness */
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-in-stock {
+    background-color: #10B981;
+}
+
+.status-low-stock {
+    background-color: #F59E0B;
+}
+
+.status-out-of-stock {
+    background-color: #EF4444;
+}
+
+/* Animation for alerts */
+@keyframes pulse-alert {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.alert-pulse {
+    animation: pulse-alert 2s infinite;
 }
