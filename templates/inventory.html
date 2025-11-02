@@ -8,13 +8,61 @@
     <p class="text-gray-600">Manage your product inventory below.</p>
 </div>
 
+<!-- Search and Filter Section -->
+<div class="bg-white rounded-lg shadow p-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- General Search -->
+        <div>
+            <label for="global-search" class="block text-sm font-medium text-gray-700 mb-2">Search Products</label>
+            <div class="relative">
+                <input type="text" 
+                       id="global-search" 
+                       placeholder="Search by name, description, or supplier..."
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div>
+            <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2">Filter by Category</label>
+            <select id="category-filter" 
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="all">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category|lower }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Stock Status Filter -->
+        <div>
+            <label for="stock-filter" class="block text-sm font-medium text-gray-700 mb-2">Stock Status</label>
+            <select id="stock-filter" 
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="all">All Stock Status</option>
+                <option value="in-stock">In Stock (10+)</option>
+                <option value="low-stock">Low Stock (1-9)</option>
+                <option value="out-of-stock">Out of Stock</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Active Filters Display -->
+    <div id="active-filters" class="mt-4 hidden">
+        <div class="flex items-center flex-wrap gap-2">
+            <span class="text-sm text-gray-700">Active filters:</span>
+        </div>
+    </div>
+</div>
+
 <div class="bg-white rounded-lg shadow overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
         <h2 class="text-xl font-semibold text-gray-800">All Products</h2>
         <div class="flex items-center space-x-4">
             <div class="flex items-center">
                 <label for="sort-select" class="text-sm font-medium text-gray-700 mr-2">Sort by:</label>
-                <select id="sort-select" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select id="sort-select" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="name-asc">Product Name (A-Z)</option>
                     <option value="name-desc">Product Name (Z-A)</option>
                     <option value="category-asc">Category (A-Z)</option>
@@ -31,10 +79,15 @@
                 </select>
             </div>
             <a href="{{ url_for('add_product') }}" 
-               class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300 flex items-center">
+               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 flex items-center">
                 <i class="fas fa-plus-circle mr-2"></i> Add Product
             </a>
         </div>
+    </div>
+    
+    <!-- Results Count -->
+    <div id="results-count" class="px-6 py-3 bg-gray-50 border-b border-gray-200 text-sm text-gray-600">
+        Showing {{ products|length }} products
     </div>
     
     <div class="overflow-x-auto">
@@ -88,7 +141,9 @@
                     data-quantity="{{ product.quantity }}"
                     data-price="{{ product.price }}"
                     data-value="{{ product.quantity * product.price }}"
-                    data-supplier="{{ product.supplier|lower if product.supplier else '' }}">
+                    data-supplier="{{ product.supplier|lower if product.supplier else '' }}"
+                    data-description="{{ product.description|lower if product.description else '' }}"
+                    data-stock-status="{% if product.quantity == 0 %}out-of-stock{% elif product.quantity < 10 %}low-stock{% else %}in-stock{% endif %}">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
                         {% if product.description %}
@@ -96,7 +151,7 @@
                         {% endif %}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 category-tag">
                             {{ product.category }}
                         </span>
                     </td>
@@ -114,7 +169,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div class="flex space-x-3">
                             <a href="{{ url_for('edit_product', product_id=product.id) }}" 
-                               class="text-indigo-600 hover:text-indigo-900 transition duration-300 flex items-center">
+                               class="text-blue-600 hover:text-blue-900 transition duration-300 flex items-center">
                                 <i class="fas fa-edit mr-1"></i> Edit
                             </a>
                             <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" class="inline">
@@ -134,7 +189,7 @@
                             <i class="fas fa-box-open text-4xl mb-3"></i>
                             <p class="text-lg">No products found.</p>
                             <p class="text-sm mt-2">Get started by adding your first product to the inventory.</p>
-                            <a href="{{ url_for('add_product') }}" class="inline-block mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300">
+                            <a href="{{ url_for('add_product') }}" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
                                 <i class="fas fa-plus-circle mr-2"></i>Add Product
                             </a>
                         </div>
@@ -147,10 +202,135 @@
 </div>
 
 <script>
-// Sorting functionality
-let currentSort = { field: 'name', direction: 'asc' };
+// Search and Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const globalSearch = document.getElementById('global-search');
+    const categoryFilter = document.getElementById('category-filter');
+    const stockFilter = document.getElementById('stock-filter');
+    const resultsCount = document.getElementById('results-count');
+    const activeFilters = document.getElementById('active-filters');
 
-// Custom category order
+    // Add event listeners for all filters
+    [globalSearch, categoryFilter, stockFilter].forEach(filter => {
+        filter.addEventListener('input', applyFilters);
+        filter.addEventListener('change', applyFilters);
+    });
+
+    function applyFilters() {
+        const searchTerm = globalSearch.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const selectedStockStatus = stockFilter.value;
+        
+        const rows = document.querySelectorAll('.product-row');
+        let visibleCount = 0;
+        const activeFilterTags = [];
+
+        rows.forEach(row => {
+            const name = row.dataset.name;
+            const category = row.dataset.category;
+            const supplier = row.dataset.supplier;
+            const description = row.dataset.description;
+            const stockStatus = row.dataset.stockStatus;
+            
+            let matchesSearch = true;
+            let matchesCategory = true;
+            let matchesStock = true;
+
+            // Apply global search
+            if (searchTerm) {
+                matchesSearch = name.includes(searchTerm) || 
+                              supplier.includes(searchTerm) || 
+                              description.includes(searchTerm);
+                if (matchesSearch) {
+                    activeFilterTags.push(`Search: "${searchTerm}"`);
+                }
+            }
+
+            // Apply category filter
+            if (selectedCategory !== 'all') {
+                matchesCategory = category === selectedCategory;
+                if (matchesCategory) {
+                    activeFilterTags.push(`Category: ${selectedCategory}`);
+                }
+            }
+
+            // Apply stock filter
+            if (selectedStockStatus !== 'all') {
+                matchesStock = stockStatus === selectedStockStatus;
+                if (matchesStock) {
+                    activeFilterTags.push(`Stock: ${selectedStockStatus.replace('-', ' ')}`);
+                }
+            }
+
+            // Show/hide row based on all filters
+            if (matchesSearch && matchesCategory && matchesStock) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update results count
+        resultsCount.textContent = `Showing ${visibleCount} of {{ products|length }} products`;
+
+        // Update active filters display
+        updateActiveFilters(activeFilterTags);
+    }
+
+    function updateActiveFilters(tags) {
+        const uniqueTags = [...new Set(tags)];
+        
+        if (uniqueTags.length > 0) {
+            activeFilters.classList.remove('hidden');
+            activeFilters.innerHTML = `
+                <span class="text-sm text-gray-700">Active filters:</span>
+                ${uniqueTags.map(tag => `
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        ${tag}
+                        <button type="button" class="ml-1 text-blue-600 hover:text-blue-800" onclick="clearFilter('${tag}')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                `).join('')}
+                <button type="button" onclick="clearAllFilters()" class="text-sm text-blue-600 hover:text-blue-800 ml-2">
+                    Clear all
+                </button>
+            `;
+        } else {
+            activeFilters.classList.add('hidden');
+        }
+    }
+
+    // Make functions globally available for the filter buttons
+    window.clearFilter = function(filterTag) {
+        const [type, value] = filterTag.split(': ');
+        
+        switch(type) {
+            case 'Search':
+                globalSearch.value = '';
+                break;
+            case 'Category':
+                categoryFilter.value = 'all';
+                break;
+            case 'Stock':
+                stockFilter.value = 'all';
+                break;
+        }
+        
+        applyFilters();
+    };
+
+    window.clearAllFilters = function() {
+        globalSearch.value = '';
+        categoryFilter.value = 'all';
+        stockFilter.value = 'all';
+        applyFilters();
+    };
+});
+
+// Your existing sorting functionality remains the same
+let currentSort = { field: 'name', direction: 'asc' };
 const categoryOrder = {
     'food': 1,
     'fruit': 2,
@@ -160,7 +340,6 @@ const categoryOrder = {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Add click events to sort headers
     document.querySelectorAll('.sort-header').forEach(header => {
         header.addEventListener('click', function() {
             const field = this.dataset.sort;
@@ -168,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add change event to sort select
     document.getElementById('sort-select').addEventListener('change', function() {
         const [field, direction] = this.value.split('-');
         sortTable(field, direction);
@@ -177,13 +355,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function sortTable(field, direction = null) {
     const rows = Array.from(document.querySelectorAll('.product-row'));
+    const visibleRows = rows.filter(row => row.style.display !== 'none');
     const tbody = document.getElementById('product-table-body');
     
-    // Determine sort direction
     if (direction) {
         currentSort.direction = direction;
     } else {
-        // Toggle direction if clicking the same field
         if (currentSort.field === field) {
             currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
         } else {
@@ -192,26 +369,19 @@ function sortTable(field, direction = null) {
     }
     
     currentSort.field = field;
-    
-    // Update sort select to match
     document.getElementById('sort-select').value = `${field}-${currentSort.direction}`;
-    
-    // Update sort indicators in headers
     updateSortIndicators(field, currentSort.direction);
     
-    // Sort rows
-    rows.sort((a, b) => {
+    visibleRows.sort((a, b) => {
         let aValue = a.dataset[field];
         let bValue = b.dataset[field];
         
-        // Special handling for custom category order
         if (field === 'category' && document.getElementById('sort-select').value === 'category-custom') {
             const aOrder = categoryOrder[aValue] || 999;
             const bOrder = categoryOrder[bValue] || 999;
             return aOrder - bOrder;
         }
         
-        // Convert to numbers if applicable
         if (field === 'quantity' || field === 'price' || field === 'value') {
             aValue = parseFloat(aValue);
             bValue = parseFloat(bValue);
@@ -224,26 +394,28 @@ function sortTable(field, direction = null) {
         }
     });
     
-    // Clear and re-append sorted rows
-    tbody.innerHTML = '';
-    rows.forEach(row => tbody.appendChild(row));
+    // Re-append all rows in correct order
+    rows.forEach(row => row.remove());
+    visibleRows.forEach(row => tbody.appendChild(row));
+    
+    // Re-append hidden rows at the end
+    const hiddenRows = rows.filter(row => row.style.display === 'none');
+    hiddenRows.forEach(row => tbody.appendChild(row));
 }
 
 function updateSortIndicators(activeField, direction) {
-    // Reset all sort indicators
     document.querySelectorAll('.sort-header i').forEach(icon => {
         icon.className = 'fas fa-sort ml-1 text-gray-400';
     });
     
-    // Set active sort indicator
     const activeHeader = document.querySelector(`.sort-header[data-sort="${activeField}"] i`);
     if (activeHeader) {
         if (document.getElementById('sort-select').value === 'category-custom') {
-            activeHeader.className = 'fas fa-sort ml-1 text-indigo-500';
+            activeHeader.className = 'fas fa-sort ml-1 text-blue-500';
         } else {
             activeHeader.className = direction === 'asc' 
-                ? 'fas fa-sort-up ml-1 text-indigo-500' 
-                : 'fas fa-sort-down ml-1 text-indigo-500';
+                ? 'fas fa-sort-up ml-1 text-blue-500' 
+                : 'fas fa-sort-down ml-1 text-blue-500';
         }
     }
 }

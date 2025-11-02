@@ -111,9 +111,6 @@ def dashboard():
             Product.quantity > 0
         ).order_by(Product.quantity.asc()).limit(6).all()
         
-        print(f"Debug: Total products: {total_products}")  # Debug line
-        print(f"Debug: Recent products count: {len(recent_products)}")  # Debug line
-        
         return render_template('dashboard.html', 
                              total_products=total_products, 
                              low_stock=low_stock,
@@ -122,7 +119,7 @@ def dashboard():
                              recent_products=recent_products,
                              low_stock_products=low_stock_products)
     except Exception as e:
-        print(f"Error in dashboard route: {e}")  # Debug line
+        print(f"Error in dashboard route: {e}")
         flash('Error loading dashboard', 'error')
         return render_template('dashboard.html', 
                              total_products=0, 
@@ -170,7 +167,11 @@ def add_product():
 @login_required
 def inventory():
     products = Product.query.filter_by(user_id=current_user.id).all()
-    return render_template('inventory.html', products=products)
+    # Get unique categories for the filter dropdown
+    categories = list(set(product.category for product in products if product.category))
+    categories.sort()
+    
+    return render_template('inventory.html', products=products, categories=categories)
 
 @app.route('/api/products')
 @login_required

@@ -3,63 +3,242 @@
 {% block title %}Add Product - Stock Management System{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Add New Product</h1>
-        <p class="text-gray-600">Fill out the form below to add a new product to your inventory.</p>
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header Section -->
+    <div class="mb-8 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+            <i class="fas fa-plus-circle text-2xl text-blue-600"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Add New Product</h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">Fill out the form below to add a new product to your inventory. All fields marked with * are required.</p>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-        <form method="POST" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
-                    <input type="text" id="name" name="name" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
-                </div>
+    <!-- Form Section -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+        <!-- Form Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+            <h2 class="text-xl font-semibold text-white flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                Product Information
+            </h2>
+        </div>
+        
+        <form method="POST" class="p-6 space-y-8">
+            <!-- Basic Information Section -->
+            <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2 flex items-center">
+                    <i class="fas fa-cube mr-2 text-blue-500"></i>
+                    Basic Information
+                </h3>
                 
-                <div>
-                    <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                    <input type="text" id="category" name="category" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
-                </div>
-                
-                <div>
-                    <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
-                    <input type="number" id="quantity" name="quantity" min="0" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
-                </div>
-                
-                <div>
-                    <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price ($) *</label>
-                    <input type="number" id="price" name="price" min="0" step="0.01" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
-                </div>
-                
-                <div class="md:col-span-2">
-                    <label for="supplier" class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
-                    <input type="text" id="supplier" name="supplier" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
-                </div>
-                
-                <div class="md:col-span-2">
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea id="description" name="description" rows="4" 
-                              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Product Name -->
+                    <div class="space-y-2">
+                        <label for="name" class="block text-sm font-medium text-gray-700 flex items-center">
+                            <i class="fas fa-tag mr-2 text-blue-500 text-xs"></i>
+                            Product Name *
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="name" name="name" required 
+                                   placeholder="Enter product name"
+                                   class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 hover:border-gray-400">
+                            <i class="fas fa-box absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Category -->
+                    <div class="space-y-2">
+                        <label for="category" class="block text-sm font-medium text-gray-700 flex items-center">
+                            <i class="fas fa-layer-group mr-2 text-blue-500 text-xs"></i>
+                            Category *
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="category" name="category" required 
+                                   placeholder="e.g., Electronics, Clothing"
+                                   class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 hover:border-gray-400">
+                            <i class="fas fa-tags absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="flex justify-end space-x-4 pt-4">
-                <a href="{{ url_for('inventory') }}" 
-                   class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-300">
-                    Cancel
-                </a>
-                <button type="submit" 
-                        class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300">
-                    Add Product
-                </button>
+
+            <!-- Inventory & Pricing Section -->
+            <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2 flex items-center">
+                    <i class="fas fa-chart-line mr-2 text-green-500"></i>
+                    Inventory & Pricing
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Quantity -->
+                    <div class="space-y-2">
+                        <label for="quantity" class="block text-sm font-medium text-gray-700 flex items-center">
+                            <i class="fas fa-boxes mr-2 text-green-500 text-xs"></i>
+                            Quantity *
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="quantity" name="quantity" min="0" required 
+                                   placeholder="0"
+                                   class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 hover:border-gray-400">
+                            <i class="fas fa-hashtag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-500">Current stock quantity</p>
+                    </div>
+                    
+                    <!-- Price -->
+                    <div class="space-y-2">
+                        <label for="price" class="block text-sm font-medium text-gray-700 flex items-center">
+                            <i class="fas fa-dollar-sign mr-2 text-green-500 text-xs"></i>
+                            Price ($) *
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
+                            <input type="number" id="price" name="price" min="0" step="0.01" required 
+                                   placeholder="0.00"
+                                   class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 hover:border-gray-400">
+                        </div>
+                        <p class="text-xs text-gray-500">Price per unit</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information Section -->
+            <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2 flex items-center">
+                    <i class="fas fa-info-circle mr-2 text-purple-500"></i>
+                    Additional Information
+                </h3>
+                
+                <!-- Supplier -->
+                <div class="space-y-2">
+                    <label for="supplier" class="block text-sm font-medium text-gray-700 flex items-center">
+                        <i class="fas fa-truck mr-2 text-purple-500 text-xs"></i>
+                        Supplier
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="supplier" name="supplier" 
+                               placeholder="Enter supplier name"
+                               class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 hover:border-gray-400">
+                        <i class="fas fa-building absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="space-y-2">
+                    <label for="description" class="block text-sm font-medium text-gray-700 flex items-center">
+                        <i class="fas fa-align-left mr-2 text-purple-500 text-xs"></i>
+                        Description
+                    </label>
+                    <div class="relative">
+                        <textarea id="description" name="description" rows="4" 
+                                  placeholder="Enter product description, features, or notes..."
+                                  class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 hover:border-gray-400 resize-none"></textarea>
+                        <i class="fas fa-file-alt absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <p class="text-xs text-gray-500">Optional: Add product details, specifications, or notes</p>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 pt-6 border-t border-gray-200">
+                <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                    <span>All required fields are marked with *</span>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <a href="{{ url_for('inventory') }}" 
+                       class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition duration-300 flex items-center group">
+                        <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform duration-300"></i>
+                        Back to Inventory
+                    </a>
+                    <button type="submit" 
+                            class="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300 transform hover:-translate-y-0.5 flex items-center shadow-lg hover:shadow-xl">
+                        <i class="fas fa-plus-circle mr-2"></i>
+                        Add Product
+                    </button>
+                </div>
             </div>
         </form>
     </div>
+
+    <!-- Quick Tips -->
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-blue-800 mb-3 flex items-center">
+            <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+            Quick Tips
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700">
+            <div class="flex items-start space-x-2">
+                <i class="fas fa-check-circle text-green-500 mt-0.5"></i>
+                <span>Use descriptive product names for easy searching</span>
+            </div>
+            <div class="flex items-start space-x-2">
+                <i class="fas fa-check-circle text-green-500 mt-0.5"></i>
+                <span>Keep categories consistent across similar products</span>
+            </div>
+            <div class="flex items-start space-x-2">
+                <i class="fas fa-check-circle text-green-500 mt-0.5"></i>
+                <span>Set low quantity alerts by keeping stock under 10 units</span>
+            </div>
+            <div class="flex items-start space-x-2">
+                <i class="fas fa-check-circle text-green-500 mt-0.5"></i>
+                <span>Include supplier information for easy reordering</span>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Custom styles for enhanced visual appeal */
+    input:focus, textarea:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Smooth transitions for all interactive elements */
+    input, textarea, button, a {
+        transition: all 0.3s ease-in-out;
+    }
+    
+    /* Hover effects for form sections */
+    .space-y-6 > div:hover label {
+        color: #1f2937;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add real-time validation and character counters
+    const description = document.getElementById('description');
+    const charCount = document.createElement('div');
+    charCount.className = 'text-xs text-gray-500 text-right mt-1';
+    charCount.textContent = '0 characters';
+    description.parentNode.appendChild(charCount);
+    
+    description.addEventListener('input', function() {
+        charCount.textContent = this.value.length + ' characters';
+        if (this.value.length > 500) {
+            charCount.className = 'text-xs text-red-500 text-right mt-1';
+        } else {
+            charCount.className = 'text-xs text-gray-500 text-right mt-1';
+        }
+    });
+    
+    // Add price formatting
+    const priceInput = document.getElementById('price');
+    priceInput.addEventListener('blur', function() {
+        if (this.value) {
+            this.value = parseFloat(this.value).toFixed(2);
+        }
+    });
+    
+    // Add quantity validation
+    const quantityInput = document.getElementById('quantity');
+    quantityInput.addEventListener('input', function() {
+        if (this.value < 0) {
+            this.value = 0;
+        }
+    });
+});
+</script>
 {% endblock %}
