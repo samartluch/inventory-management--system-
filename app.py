@@ -89,31 +89,48 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    products = Product.query.filter_by(user_id=current_user.id).all()
-    total_products = len(products)
-    low_stock = len([p for p in products if p.quantity < 10 and p.quantity > 0])
-    out_of_stock = len([p for p in products if p.quantity == 0])
-    
-    # Order statistics
-    total_orders = Order.query.filter_by(user_id=current_user.id).count()
-    
-    # Get recent products
-    recent_products = Product.query.filter_by(user_id=current_user.id).order_by(Product.created_at.desc()).limit(5).all()
-    
-    # Get low stock products for alert
-    low_stock_products = Product.query.filter(
-        Product.user_id == current_user.id, 
-        Product.quantity < 10,
-        Product.quantity > 0
-    ).order_by(Product.quantity.asc()).limit(6).all()
-    
-    return render_template('dashboard.html', 
-                         total_products=total_products, 
-                         low_stock=low_stock,
-                         out_of_stock=out_of_stock,
-                         total_orders=total_orders,
-                         recent_products=recent_products,
-                         low_stock_products=low_stock_products)
+    try:
+        # Get products for current user
+        products = Product.query.filter_by(user_id=current_user.id).all()
+        total_products = len(products)
+        
+        # Calculate stock status
+        low_stock = len([p for p in products if p.quantity < 10 and p.quantity > 0])
+        out_of_stock = len([p for p in products if p.quantity == 0])
+        
+        # Order statistics
+        total_orders = Order.query.filter_by(user_id=current_user.id).count()
+        
+        # Get recent products
+        recent_products = Product.query.filter_by(user_id=current_user.id).order_by(Product.created_at.desc()).limit(5).all()
+        
+        # Get low stock products for alert
+        low_stock_products = Product.query.filter(
+            Product.user_id == current_user.id, 
+            Product.quantity < 10,
+            Product.quantity > 0
+        ).order_by(Product.quantity.asc()).limit(6).all()
+        
+        print(f"Debug: Total products: {total_products}")  # Debug line
+        print(f"Debug: Recent products count: {len(recent_products)}")  # Debug line
+        
+        return render_template('dashboard.html', 
+                             total_products=total_products, 
+                             low_stock=low_stock,
+                             out_of_stock=out_of_stock,
+                             total_orders=total_orders,
+                             recent_products=recent_products,
+                             low_stock_products=low_stock_products)
+    except Exception as e:
+        print(f"Error in dashboard route: {e}")  # Debug line
+        flash('Error loading dashboard', 'error')
+        return render_template('dashboard.html', 
+                             total_products=0, 
+                             low_stock=0,
+                             out_of_stock=0,
+                             total_orders=0,
+                             recent_products=[],
+                             low_stock_products=[])
 
 @app.route('/add_product', methods=['GET', 'POST'])
 @login_required
@@ -261,9 +278,17 @@ def add_order():
             db.session.rollback()
             flash('An error occurred while creating the order.', 'error')
     
-    # Get available products for the form
+    # Get available products for the form and convert to dictionaries
     products = Product.query.filter_by(user_id=current_user.id).filter(Product.quantity > 0).all()
-    return render_template('add_order.html', products=products)
+    products_data = [{
+        'id': p.id,
+        'name': p.name,
+        'quantity': p.quantity,
+        'price': float(p.price),
+        'category': p.category
+    } for p in products]
+    
+    return render_template('add_order.html', products=products_data)
 
 @app.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 @login_required

@@ -18,16 +18,19 @@
                     <h1 class="text-xl font-bold">StockMaster</h1>
                 </div>
                 <div class="flex items-center space-x-6">
-                    <a href="{{ url_for('dashboard') }}" class="hover:text-blue-200 transition duration-300">
+                    <a href="{{ url_for('dashboard') }}" class="hover:text-blue-200 transition duration-300 {% if request.endpoint == 'dashboard' %}font-bold underline{% endif %}">
                         <i class="fas fa-tachometer-alt mr-1"></i>Dashboard
                     </a>
-                    <a href="{{ url_for('inventory') }}" class="hover:text-blue-200 transition duration-300">
+                    <a href="{{ url_for('inventory') }}" class="hover:text-blue-200 transition duration-300 {% if request.endpoint == 'inventory' %}font-bold underline{% endif %}">
                         <i class="fas fa-boxes mr-1"></i>Inventory
                     </a>
-                    <a href="{{ url_for('add_product') }}" class="hover:text-blue-200 transition duration-300">
+                    <a href="{{ url_for('add_product') }}" class="hover:text-blue-200 transition duration-300 {% if request.endpoint == 'add_product' %}font-bold underline{% endif %}">
                         <i class="fas fa-plus-circle mr-1"></i>Add Product
                     </a>
-                    <a href="{{ url_for('report') }}" class="hover:text-blue-200 transition duration-300">
+                    <a href="{{ url_for('orders') }}" class="hover:text-blue-200 transition duration-300 {% if request.endpoint == 'orders' %}font-bold underline{% endif %}">
+                        <i class="fas fa-shopping-cart mr-1"></i>Orders
+                    </a>
+                    <a href="{{ url_for('report') }}" class="hover:text-blue-200 transition duration-300 {% if request.endpoint == 'report' %}font-bold underline{% endif %}">
                         <i class="fas fa-chart-bar mr-1"></i>Reports
                     </a>
                     <div class="flex items-center space-x-2">
